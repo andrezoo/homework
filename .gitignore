@@ -2,4 +2,5 @@
 id_andrezoo
 id_andrezoo.pub
 /ssh
-ssh
+.ssh
+/.ssh
