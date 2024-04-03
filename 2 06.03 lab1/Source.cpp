@@ -5,6 +5,7 @@
 #include <vector>
 #include <algorithm>
 #include <utility>
+#include <string>
 
 
 int perebor(int *data, int size, int key) {
@@ -82,16 +83,16 @@ static int data[100000] = {};
 static int elem_check[100000] = {};
 
 int main() {
+	std::string EXPERIMENTNAME = "perebor_n.txt";
 	std::ofstream fin1;
-	std::ofstream fin2;
-	fin1.open("n_data.txt");
-	fin2.open("time_data.txt");
+	fin1.open(EXPERIMENTNAME);
 	int counter = 100;
 	unsigned seed = 1001;
 	std::default_random_engine rng(seed);
 	while (counter < 10000) {
 		counter += 10;
-		std::normal_distribution<> dstr(1, counter/100);
+		//std::normal_distribution<> dstr(1, counter/100);
+		std::uniform_real_distribution<> dstr(1,counter/100);
 		for (int i = 0; i < counter; ++i) {
 			data[i] = abs(static_cast<int>(dstr(rng)));
 		}
@@ -105,9 +106,7 @@ int main() {
 		for (int j = 100; j != 0; j--) { A_strategy(data, counter); }
 		auto end = std::chrono::steady_clock::now();
 		auto time_span = std::chrono::duration_cast<std::chrono::microseconds>(end - begin);
-		fin1 << counter << '\n';
-		std::cout << counter << '\n';
-		fin2 << time_span.count() << '\n';
+		fin1 << counter << "," << time_span.count() << '\n';
 	}
 }
 

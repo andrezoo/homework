@@ -83,30 +83,38 @@ static int elem_check[100000] = {};
 
 int main() {
 	std::ofstream fin1;
-	std::ofstream fin2;
-	fin1.open("n_data.txt");
-	fin2.open("time_data.txt");
+	fin1.open("binsearch.txt");
 	int counter = 100;
 	unsigned seed = 1001;
 	std::default_random_engine rng(seed);
-	while (counter < 100000) {
+	int iter = 0;
+	int itercount = 100;
+	int mean = 0;
+	fin1 << "n,time" << '\n';
+	while (counter < 10000) {
 		counter += 10;
-		std::normal_distribution<> dstr(1, counter/100);
+		std::uniform_real_distribution<> dstr(1, counter/100);
+		int num = abs(static_cast<int>(dstr(rng)));
+		while (iter < itercount) {
+			auto begin = std::chrono::steady_clock::now();
+			for (int j = 100; j != 0; j--) { perebor(data, counter, num); }
+			auto end = std::chrono::steady_clock::now();
+			auto time_span = std::chrono::duration_cast<std::chrono::microseconds>(end - begin);
+			mean += time_span.count();
+			iter += 1;
+		}
+		iter = 0;
+		mean = mean / itercount;
+		std::cout << counter << std::endl;
+
 		for (int i = 0; i < counter; ++i) {
 			data[i] = abs(static_cast<int>(dstr(rng)));
 		}
 		for (int i = 0; i < (counter / 100); i++) {
-			C_strategy(data, perebor(data, counter, abs(static_cast<int>(dstr(rng)))), elem_check);
+			C_strategy(data, bin_search(data, counter, abs(static_cast<int>(dstr(rng)))), elem_check);
 		}
 
-		int num = abs(static_cast<int>(dstr(rng)));
-		auto begin = std::chrono::steady_clock::now();
-		for (int j = 100; j != 0; j--) { bin_search(data, counter, num); }
-		auto end = std::chrono::steady_clock::now();
-		auto time_span = std::chrono::duration_cast<std::chrono::microseconds>(end - begin);
-		fin1 << counter << '\n';
-		std::cout << counter << '\n';
-		fin2 << time_span.count() << '\n';
+		fin1 << counter << "," << mean << '\n';
 	}
 }
 

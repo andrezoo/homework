@@ -32,12 +32,6 @@ void C_strategy(int* data, int i, int* elem_check) {
 	}
 }
 
-bool pereb_v(std::vector<int> data, int key) {
-	for (int i = 0; i < data.size(); i++) {
-		if (data[i] == key) return true;
-	}
-	return false;
-}
 
 int bin_search(int* data, int size, int key) {
 	bool flag = false;
@@ -87,26 +81,9 @@ int main() {
 	int counter = 100;
 	unsigned seed = 1001;
 	std::default_random_engine rng(seed);
-	int iter = 0;
-	int itercount = 100;
-	int mean = 0;
-	fin1 << "n,time" << '\n';
 	while (counter < 100000) {
 		counter += 10;
 		std::uniform_real_distribution<> dstr(1, counter/100);
-		int num = abs(static_cast<int>(dstr(rng)));
-		while (iter < itercount) {
-			auto begin = std::chrono::steady_clock::now();
-			for (int j = 100; j != 0; j--) { perebor(data, counter, num); }
-			auto end = std::chrono::steady_clock::now();
-			auto time_span = std::chrono::duration_cast<std::chrono::microseconds>(end - begin);
-			mean += time_span.count();
-			iter += 1;
-		}
-		iter = 0;
-		mean = mean / itercount;
-		std::cout << counter << std::endl;
-
 		for (int i = 0; i < counter; ++i) {
 			data[i] = abs(static_cast<int>(dstr(rng)));
 		}
@@ -114,7 +91,12 @@ int main() {
 			C_strategy(data, perebor(data, counter, abs(static_cast<int>(dstr(rng)))), elem_check);
 		}
 
-		fin1 << counter << "," << mean << '\n';
+		int num = abs(static_cast<int>(dstr(rng)));
+		auto begin = std::chrono::steady_clock::now();
+		for (int j = 100; j != 0; j--) { straight_for_sum_of_2(data, counter, num); }
+		auto end = std::chrono::steady_clock::now();
+		auto time_span = std::chrono::duration_cast<std::chrono::microseconds>(end - begin);
+		fin1 << counter << "," << time_span.count() << '\n';
 	}
 }
 
