@@ -94,12 +94,14 @@ int main() {
 	while (counter < 100000) {
 		counter += 10;
 		std::uniform_real_distribution<> dstr(1, counter/100);
-		int num = abs(static_cast<int>(dstr(rng)));
 		while (iter < itercount) {
 			auto begin = std::chrono::steady_clock::now();
-			for (int j = 100; j != 0; j--) { perebor(data, counter, num); }
+			for (int j = 100; j != 0; j--) { 
+				int num = abs(static_cast<int>(dstr(rng)));
+				perebor(data, counter, num); 
+			}
 			auto end = std::chrono::steady_clock::now();
-			auto time_span = std::chrono::duration_cast<std::chrono::microseconds>(end - begin);
+			auto time_span = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
 			mean += time_span.count();
 			iter += 1;
 		}
